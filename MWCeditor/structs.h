@@ -172,5 +172,5 @@ typedef struct tag_dlghdr
 	HWND hwndTab;       // tab control 
 	HWND hwndDisplay;   // current child dialog box 
 	RECT rcDisplay;     // display rectangle for the tab control 
-	DLGTEMPLATEEX *apRes[2];
+	DLGTEMPLATEEX *apRes[3];
 } DLGHDR;

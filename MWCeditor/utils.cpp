@@ -1940,7 +1940,7 @@ static bool PartIsDamaged(const CarPart* part)
 
 	float effectiveWear = wear;
 	if (IsInvertedWearKey(var.key, part))
-		effectiveWear = 100.f - wear;
+		effectiveWear = 99.f - wear;
 
 	if (HasNoMountedTire(part))
 		return FALSE;
@@ -2661,7 +2661,7 @@ void BatchProcessDamage(bool all)
 			{
 				if (PartIsDamaged(&carparts[i]))
 				{
-					UpdateValue(L"100", carparts[i].iDamaged);
+					UpdateValue(L"99", carparts[i].iDamaged);
 				}
 			}
 		}

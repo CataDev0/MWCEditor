@@ -29,7 +29,7 @@ DebugOutput *dbglog;
 class MapDialog* EditorMap = NULL;
 #endif /*_MAP*/
 
-bool bFiledateinit = FALSE, bMakeBackup = TRUE, bEulerAngles = FALSE, bBackupChangeNotified = FALSE, bFirstStartup = TRUE, bAllowScale = FALSE, bDisplayRawNames = FALSE, bCheckIssues = FALSE, bStartWithMap = FALSE;
+bool bFiledateinit = FALSE, bMakeBackup = FALSE, bEulerAngles = FALSE, bBackupChangeNotified = FALSE, bFirstStartup = TRUE, bAllowScale = FALSE, bDisplayRawNames = FALSE, bCheckIssues = FALSE, bStartWithMap = FALSE;
 const std::wstring settings[] = { L"make_backup", L"backup_change_notified", L"first_startup", L"allow_scale", L"use_euler", L"raw_names", L"check_issues", L"start_with_map"};
 PVOID pResizeState = NULL;
 

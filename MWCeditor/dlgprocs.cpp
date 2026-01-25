@@ -1593,7 +1593,7 @@ INT_PTR CALLBACK PropertyListProc(HWND hwnd, uint32_t Message, WPARAM wParam, LP
 	return TRUE;
 }
 
-INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
+INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam, std::vector<CarProperty>& carproperties)
 {
 	switch (Message)
 	{
@@ -1651,9 +1651,9 @@ INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM
 				continue;
 
 			std::wstring displayname = BuildWearDisplayName(variable.key, wearIdentifiers);
-			CarProperty cp = CarProperty(displayname, variable.key, EntryValue::Float, FloatToBin(0.f), FloatToBin(100.f));
+			CarProperty cp = CarProperty(displayname, variable.key, EntryValue::Float, FloatToBin(0.f), FloatToBin(99.f));
 			cp.index = i;
-			carproperties.push_back(cp);
+			//carproperties.push_back(cp);
 			maintenanceLookupNames.insert(variable.key);
 		}
 
@@ -1762,7 +1762,14 @@ INT_PTR CALLBACK ReportChildrenProc(HWND hwnd, uint32_t Message, WPARAM wParam, 
 	if (Message == WM_INITDIALOG)
 		SetWindowPos(hwnd, NULL, pHdr->rcDisplay.left, pHdr->rcDisplay.top, (pHdr->rcDisplay.right - pHdr->rcDisplay.left), (pHdr->rcDisplay.bottom - pHdr->rcDisplay.top), SWP_SHOWWINDOW);
 
-	return iSel == 0 ? ReportBoltsProc(hwnd, Message, wParam, lParam) : ReportMaintenanceProc(hwnd, Message, wParam, lParam);
+	if (iSel == 0)
+		return ReportBoltsProc(hwnd, Message, wParam, lParam);
+	else if (iSel == 1)
+		return ReportMaintenanceProc(hwnd, Message, wParam, lParam, carproperties);
+	else {
+		std::vector<CarProperty> emptyCarProperties;
+		return ReportMaintenanceProc(hwnd, Message, wParam, lParam, emptyCarProperties);
+	}
 }
 
 INT_PTR CALLBACK CompareProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
@@ -3402,14 +3409,17 @@ INT_PTR CALLBACK ReportProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM l
 		TabCtrl_InsertItem(pHdr->hwndTab, 0, &tie);
 		tie.pszText = L"Maintenance";
 		TabCtrl_InsertItem(pHdr->hwndTab, 1, &tie);
+		tie.pszText = L"Tuning";
+		TabCtrl_InsertItem(pHdr->hwndTab, 2, &tie);
 
 		// Lock the resources for the child dialog boxes. 
 		pHdr->apRes[0] = DoLockDlgRes(MAKEINTRESOURCE(IDD_BOLTS));
 		pHdr->apRes[1] = DoLockDlgRes(MAKEINTRESOURCE(IDD_MAINTENANCE));
+		pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_TUNING));
 
 		// Determine a bounding rectangle that is large enough to contain the largest child dialog box. 
 		SetRectEmpty(&rcTab);
-		for (i = 0; i < 2; i++)
+		for (i = 0; i < 3; i++)
 		{
 			if (pHdr->apRes[i]->cx > rcTab.right)
 				rcTab.right = pHdr->apRes[i]->cx;
