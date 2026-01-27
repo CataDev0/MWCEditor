@@ -87,6 +87,7 @@ struct CarProperty
 	uint32_t index;
 	float recommendedValue = std::numeric_limits<float>::quiet_NaN();
 	uint32_t elementIndex = UINT_MAX;
+	bool isMaintenance = false;
 
 	CarProperty() 
 	{

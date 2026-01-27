@@ -1269,8 +1269,11 @@ INT_PTR ReportBoltsProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lPara
 
 		// Re-Populate carparts, just in case
 		PopulateCarparts();
-		for (uint32_t i = 0; i < carparts.size(); i++)
-			PopulateBList(hwnd, &carparts[i], item, &ov);
+		for (uint32_t i = 0; i < carparts.size(); i++) {
+			const bool installed = IsPartInstalled(carparts[i]);
+			if (installed)
+				PopulateBList(hwnd, &carparts[i], item, &ov);
+		}
 
 		// Draw list
 		SendMessage(hList3, WM_SETREDRAW, 1, 0);
@@ -1593,7 +1596,7 @@ INT_PTR CALLBACK PropertyListProc(HWND hwnd, uint32_t Message, WPARAM wParam, LP
 	return TRUE;
 }
 
-INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam, std::vector<CarProperty>& carproperties)
+INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam, bool isMaintenance)
 {
 	switch (Message)
 	{
@@ -1653,7 +1656,9 @@ INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM
 			std::wstring displayname = BuildWearDisplayName(variable.key, wearIdentifiers);
 			CarProperty cp = CarProperty(displayname, variable.key, EntryValue::Float, FloatToBin(0.f), FloatToBin(99.f));
 			cp.index = i;
-			//carproperties.push_back(cp);
+			cp.isMaintenance = true;
+			if (isMaintenance)
+				carproperties.push_back(cp);
 			maintenanceLookupNames.insert(variable.key);
 		}
 
@@ -1669,7 +1674,7 @@ INT_PTR ReportMaintenanceProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM
 		for (uint32_t i = 0; i < carproperties.size(); i++)
 		{
 			// But make sure it has an index set, otherwise it doesn't exist in the variable vector
-			if (carproperties[i].index != UINT_MAX)
+			if (carproperties[i].index != UINT_MAX && (isMaintenance == carproperties[i].isMaintenance))
 			{
 
 				LOG(
@@ -1764,12 +1769,8 @@ INT_PTR CALLBACK ReportChildrenProc(HWND hwnd, uint32_t Message, WPARAM wParam, 
 
 	if (iSel == 0)
 		return ReportBoltsProc(hwnd, Message, wParam, lParam);
-	else if (iSel == 1)
-		return ReportMaintenanceProc(hwnd, Message, wParam, lParam, carproperties);
-	else {
-		std::vector<CarProperty> emptyCarProperties;
-		return ReportMaintenanceProc(hwnd, Message, wParam, lParam, emptyCarProperties);
-	}
+	else
+		return ReportMaintenanceProc(hwnd, Message, wParam, lParam, iSel == 1);
 }
 
 INT_PTR CALLBACK CompareProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
@@ -3409,7 +3410,7 @@ INT_PTR CALLBACK ReportProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM l
 		TabCtrl_InsertItem(pHdr->hwndTab, 0, &tie);
 		tie.pszText = L"Maintenance";
 		TabCtrl_InsertItem(pHdr->hwndTab, 1, &tie);
-		tie.pszText = L"Tuning";
+		tie.pszText = L"Tuning && Fluids";
 		TabCtrl_InsertItem(pHdr->hwndTab, 2, &tie);
 
 		// Lock the resources for the child dialog boxes. 
