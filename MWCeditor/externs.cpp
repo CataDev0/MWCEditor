@@ -116,7 +116,7 @@ const std::wstring GLOB_STRS[] =
 	L"Measure distance", // 58
 	L"Distance to here", // 59
 	L"Clear measurement", // 60
-	L"NOW LOADING YEAR 1995...", // 61
+	L"NOW LOADING YEAR 1999...", // 61
 	L"Map failed: %s\nPlease report this issue!", // 62
 	L"Resulting file saved at \"%s\"\nOpen in browser now?", // 63
 	L"Flagged %d consumed items for deletion.\nFixed up %d item identifiers.\nEdited %d entries in total.\n(Gray entries will be removed upon saving)", // 64
