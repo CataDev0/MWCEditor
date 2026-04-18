@@ -1,5 +1,5 @@
 #include "dlgprocs.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include <algorithm>
 #include <cstdlib>
 #include <cwctype>
@@ -881,8 +881,10 @@ void UpdateRow(HWND hwnd, uint32_t pIndex, int nRow, std::wstring str = L"")
 		{
 			const float recommended = ResolveValveRecommendedValue(carproperties[pIndex]);
 			if (!std::isnan(recommended))
-			{
-				sValue = *TruncFloatStr(std::to_wstring(recommended));
+				{
+				std::wstring recStr = std::to_wstring(recommended);
+				TruncFloatStr(recStr);
+				sValue = recStr;
 			}
 			else
 			{
@@ -2858,7 +2860,9 @@ INT_PTR CALLBACK SpawnItemProc(HWND hwnd, uint32_t message, WPARAM wParam, LPARA
 
 					index = FindVariable(itemTypes[index_what].GetNameID());
 					const bool bNewIdEntry = (index == UINT_MAX);
-					std::wstring SanitizedID = *SanitizeTagStr(itemTypes[index_what].GetNameID());
+					std::wstring itemID = itemTypes[index_what].GetNameID();
+					std::wstring SanitizedID = *SanitizeTagStr(itemID);
+					//[index_what].GetNameID());
 
 					// If the ID entry is missing, we create it
 					if (bNewIdEntry)

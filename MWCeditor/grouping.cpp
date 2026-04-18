@@ -36,7 +36,8 @@ std::wstring GetItemPrefix(const std::wstring& variableKey, const std::vector<It
 {
 	for (auto& item : *sortedItemTypes)
 	{
-		std::wstring name = *SanitizeTagStr(item.GetName());
+		std::wstring itemName = item.GetName();
+		std::wstring name = *SanitizeTagStr(itemName);
 		if (variableKey.substr(0, name.size()) == name)
 			for (auto i = static_cast<uint32_t>(name.size()); i < variableKey.size(); i++)
 				if (!isdigit(variableKey[i]))

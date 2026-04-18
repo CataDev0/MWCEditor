@@ -1,6 +1,6 @@
 #pragma once
 #include "windows.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -133,7 +133,7 @@ void BatchProcessBolts(bool fix);
 void BatchProcessDamage(bool all);
 void BatchProcessWiring();
 bool BinToBolts(const std::string &str, uint32_t &bolts, uint32_t &maxbolts, std::vector<uint32_t> &boltlist);
-std::string BoltsToBin(std::vector<uint32_t> &bolts);
+std::string BoltsToBin(const std::vector<uint32_t> &bolts);
 int Variables_add(Variable var);
 bool Variables_remove(const uint32_t &index);
 bool GroupRemoved(const uint32_t &group, const uint32_t &index = UINT_MAX, const bool &IsFirst = FALSE);

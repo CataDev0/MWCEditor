@@ -247,7 +247,10 @@ std::wstring Variable::ValueBinToStr(const std::string &value, const uint32_t &t
 	switch (type)
 	{
 	case EntryValue::Float:
-		return *TruncFloatStr(BinToFloatStr(value));
+		{
+			std::wstring temp = BinToFloatStr(value);
+			return *TruncFloatStr(temp);
+		}
 	case EntryValue::Bool:
 		return bools[(value.c_str())[0]];
 	case EntryValue::Color:

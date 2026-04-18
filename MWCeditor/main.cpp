@@ -1,4 +1,5 @@
-#include "main.h"
+#include <filesystem>
+#include "Main.h"
 #ifdef _MAP
 #include "map.h"
 #endif /*_MAP*/
@@ -268,7 +269,7 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, uint32_t Message, WPARAM wParam, LPARAM lPar
 					using namespace std;
 
 					vector<wstring> basefolders;
-					wifstream inf(steampath, wifstream::in);
+					std::wifstream inf{(std::filesystem::path(steampath)), std::wifstream::in};
 
 					if (!inf.is_open()) break;
 					while (inf)

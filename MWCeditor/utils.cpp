@@ -1,3 +1,7 @@
+#include <cmath>
+#include <filesystem>
+#include <cmath>
+#include <filesystem>
 #include "utils.h"
 #include <shlobj.h> //file dialog and getknownfolderpath
 #include "aclapi.h" //ACLs SetEntriesInAcl, EXPLICIT_ACCESS
@@ -6,9 +10,9 @@
 #include <iostream>
 #include <cwctype>
 #include <cctype>
-#include <Urlmon.h>
+#include <urlmon.h>
 #include <map>
-#include <wrl\client.h> // COM Smart pointer
+#include <wrl/client.h> // COM Smart pointer
 #include <io.h> // Console
 #include <fcntl.h> // Console
 #include <iostream> // Console
@@ -767,7 +771,7 @@ void KillWhitespaces(TSTRING &str)
 	str = tmp;
 }
 
-std::vector<char> MakeCharArray(std::wstring &str)
+std::vector<char> MakeCharArray(std::wstring str)
 {
 	std::vector<char> cArray;
 	uint32_t iC = 0, iP = 0;
@@ -912,7 +916,7 @@ BOOL LoadDataFile(const std::wstring &datafilename)
 	wstring strInput, identifier;
 	vector<wstring> params;
 	groupingAliases.clear();
-	wifstream inf(datafilename, wifstream::in);
+	std::wifstream inf(std::filesystem::path(datafilename), wifstream::in);
 	if (!inf.is_open())
 		return 1;
 
@@ -1232,7 +1236,7 @@ void CompareVariables(const std::vector <Variable> *v1, const std::vector <Varia
 	// Here we assemble the html file. We store it in the app folder path for now. 
 
 	std::wstring htm = appfolderpath + L"\\Result.htm";
-	std::wofstream file(htm, std::wofstream::out, std::wofstream::trunc);
+	std::wofstream file(std::filesystem::path(htm), std::wofstream::out | std::wofstream::trunc);
 	if (!file)
 		return;
 
@@ -1291,7 +1295,7 @@ bool SaveSettings(const std::wstring &savefilename)
 {
 	using namespace std;
 
-	wifstream inf(savefilename);
+	std::wifstream inf{std::filesystem::path(savefilename)};
 	if (!inf.is_open()) return FALSE;
 
 	inf.seekg(0, inf.end);
@@ -1367,7 +1371,7 @@ bool SaveSettings(const std::wstring &savefilename)
 
 	TruncTailingNulls(&buffer);
 
-	wofstream owc(savefilename, wofstream::trunc);
+	std::wofstream owc(std::filesystem::path(savefilename), std::wofstream::trunc);
 	if (!owc.is_open()) return FALSE;
 
 	owc.write(buffer.c_str(), buffer.size());
@@ -1472,7 +1476,7 @@ int SaveFile()
 		if (GetLastError() != ERROR_SUCCESS) return 3;
 	}
 	
-	ofstream owc(filepath, ofstream::binary);
+	std::ofstream owc(std::filesystem::path(filepath), std::ofstream::binary);
 	if (!owc.is_open()) return 4;
 
 	typedef std::pair<uint32_t, int64_t> Position;
@@ -2793,7 +2797,7 @@ bool BinToBolts(const std::string &str, uint32_t &bolts, uint32_t &maxbolts, std
 	return (maxbolts != 0) ? TRUE : FALSE;
 }
 
-std::string BoltsToBin(std::vector<uint32_t> &bolts)
+std::string BoltsToBin(const std::vector<uint32_t> &bolts)
 {
 	if (bolts.size() == 0) return "";
 	std::string bin;
@@ -2928,7 +2932,7 @@ bool GroupRemoved(const uint32_t &group, const uint32_t &index, const bool &IsFi
 bool IsValidFloatStr(const std::wstring &str)
 {
 	float f = ::wcstof(str.c_str(), NULL);
-	return (isnormal(f) || f == 0.f);
+	return (std::isnormal(f) || f == 0.f);
 }
 
 bool QuatEqual(const QTRN *a, const QTRN *b)
@@ -3011,9 +3015,9 @@ std::wstring BinToFloatStr(const std::string &str)
 	if (length < 0)
 		return L"NaN";
 
-	if (isinf(f) && f > 0.f)
+	if (std::isinf(f) && f > 0.f)
 		return posInfinity;
-	else if (isnan(f) && signbit(f))
+	else if (std::isnan(f) && std::signbit(f))
 		return negInfinity;
 		
 	s.resize(length);
@@ -3325,7 +3329,7 @@ ErrorCode ParseSavegame(std::wstring* differentfilepath, std::vector<Variable>* 
 	uint32_t EmptyTagNum = 0;
 
 	ifstream iwc(
-		differentfilepath == NULL ? filepath : *differentfilepath,
+		std::filesystem::path(differentfilepath == NULL ? filepath : *differentfilepath),
 		ios::in | ios::binary
 	);
 

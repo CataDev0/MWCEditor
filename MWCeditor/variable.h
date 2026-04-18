@@ -1,6 +1,8 @@
+#include <cstdint>
+#include <cfloat>
 #pragma once
-#include <String>
-#include <Vector>
+#include <string>
+#include <vector>
 
 #ifdef _DEBUG
 #include <cassert>

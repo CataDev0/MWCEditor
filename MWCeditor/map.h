@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include <forward_list>
-#include <wrl\client.h>
+#include <wrl/client.h>
 #include "heightmap.h"
 
 #define LEN(arr) (sizeof (arr) / sizeof (arr)[0])
